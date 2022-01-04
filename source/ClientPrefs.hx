@@ -10,6 +10,7 @@ class ClientPrefs {
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
 	public static var showFPS:Bool = true;
+	public static var voicelines:Bool = false;
 	public static var flashing:Bool = true;
 	public static var globalAntialiasing:Bool = true;
 	public static var noteSplashes:Bool = true;
@@ -19,8 +20,9 @@ class ClientPrefs {
 	public static var violence:Bool = true;
 	public static var camZooms:Bool = true;
 	public static var hideHud:Bool = false;
+	public static var reanimatedSprites:Bool = true;
 	public static var noteOffset:Int = 0;
-	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var hideTime:Bool = false;
@@ -73,23 +75,32 @@ class ClientPrefs {
 		FlxG.save.data.downScroll = downScroll;
 		FlxG.save.data.middleScroll = middleScroll;
 		FlxG.save.data.showFPS = showFPS;
+		FlxG.save.data.voicelines = voicelines;
 		FlxG.save.data.flashing = flashing;
 		FlxG.save.data.globalAntialiasing = globalAntialiasing;
 		FlxG.save.data.noteSplashes = noteSplashes;
 		FlxG.save.data.lowQuality = lowQuality;
 		FlxG.save.data.framerate = framerate;
+		FlxG.save.data.reanimatedSprites = reanimatedSprites;
 		//FlxG.save.data.cursing = cursing;
 		//FlxG.save.data.violence = violence;
 		FlxG.save.data.camZooms = camZooms;
 		FlxG.save.data.noteOffset = noteOffset;
 		FlxG.save.data.hideHud = hideHud;
-		FlxG.save.data.newarrowHSV = arrowHSV;
+		FlxG.save.data.arrowHSV = arrowHSV;
 		FlxG.save.data.imagesPersist = imagesPersist;
 		FlxG.save.data.ghostTapping = ghostTapping;
 		FlxG.save.data.hideTime = hideTime;
-		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
-		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
 		FlxG.save.data.ekInput = ekInput;
+
+		var achieves:Array<String> = [];
+		for (i in 0...Achievements.achievementsUnlocked.length) {
+			if(Achievements.achievementsUnlocked[i][1]) {
+				achieves.push(Achievements.achievementsUnlocked[i][0]);
+			}
+		}
+		FlxG.save.data.achievementsUnlocked = achieves;
+		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
 		FlxG.save.flush();
 
 		var save:FlxSave = new FlxSave();
@@ -115,8 +126,14 @@ class ClientPrefs {
 		if(FlxG.save.data.flashing != null) {
 			flashing = FlxG.save.data.flashing;
 		}
+		if(FlxG.save.data.reanimatedSprites != null) {
+			reanimatedSprites = FlxG.save.data.reanimatedSprites;
+		}
 		if(FlxG.save.data.globalAntialiasing != null) {
 			globalAntialiasing = FlxG.save.data.globalAntialiasing;
+		}
+		if(FlxG.save.data.voicelines != null) {
+			voicelines = FlxG.save.data.voicelines;
 		}
 		if(FlxG.save.data.noteSplashes != null) {
 			noteSplashes = FlxG.save.data.noteSplashes;
@@ -151,8 +168,8 @@ class ClientPrefs {
 		if(FlxG.save.data.noteOffset != null) {
 			noteOffset = FlxG.save.data.noteOffset;
 		}
-		if(FlxG.save.data.newarrowHSV != null) {
-			arrowHSV = FlxG.save.data.newarrowHSV;
+		if(FlxG.save.data.arrowHSV != null) {
+			arrowHSV = FlxG.save.data.arrowHSV;
 		}
 		if(FlxG.save.data.imagesPersist != null) {
 			imagesPersist = FlxG.save.data.imagesPersist;
@@ -163,6 +180,17 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.hideTime != null) {
 			hideTime = FlxG.save.data.hideTime;
+		}
+
+		/*
+		seriously. this is all it takes to stop the player from getting their
+		ears blasted out every time they launch the game, and yet nobody does it.
+		flixel even takes care of saving your volume for you. it's right there. 
+		jesus christ people, make this a standard thing already.
+		*/
+		
+		if(FlxG.save.data.volume != null) {
+			FlxG.sound.volume = FlxG.save.data.volume;
 		}
 
 		var save:FlxSave = new FlxSave();
